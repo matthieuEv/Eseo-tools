@@ -37,9 +37,6 @@ jobs:
         cmd: build
         source: .
 
-    - name: echo ENV VAR
-      run: echo $FIREFOX_JWT_ISSUER
-
     - name: web-ext sign
       id: web-ext-sign
       uses: kewisch/action-web-ext@v1
