@@ -1,0 +1,40 @@
+{
+    "manifest_version": 2,
+    "name": "ESEO-Tools",
+    "version": "",
+    "description": "Addons for ESEO Students Website",
+    "icons": {
+        "48": "icons/48.svg",
+        "96": "icons/96.svg"
+    },
+
+    "permissions": [
+        "storage",
+        "activeTab",
+        "tabs"
+    ],
+
+    "browser_action": {
+        "default_popup": "popup/index.html",
+        "default_title": "ESEO-Tools",
+        "default_icon": {
+            "48": "icons/48.svg",
+            "96": "icons/96.svg"
+        }
+    },
+
+    "content_scripts": [
+        {
+            "matches": ["https://reseaueseo.sharepoint.com/sites/etu/Pages/Mes-notes.aspx"],
+            "js": ["scripts/gpaCalculator/main.js"]
+        }
+    ],
+
+    "browser_specific_settings": {
+        "gecko": {
+            "id": "{3e2f33e0-e00d-48fb-9f13-8b603f960faf}",
+            "update_url": "https://matthieuev.github.io/ESO_moyenne/updates.json"
+        }
+    }
+
+}
