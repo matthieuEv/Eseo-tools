@@ -2,8 +2,8 @@
 <img src="./icons/96.svg" alt="Logo">
 </p>
 
-[![](https://img.shields.io/badge/Download_Extension-EE4836?style=for-the-badge)](https://matthieuev.github.io/Eseo-toolseseo-tools.xpi)
-![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/matthieuEv/Eseo-toolsmain.yml?style=for-the-badge)
+[![](https://img.shields.io/badge/Download_Extension-EE4836?style=for-the-badge)](https://matthieuev.github.io/Eseo-tools/eseo-tools.xpi)
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/matthieuEv/Eseo-tools/main.yml?style=for-the-badge)
 
 
 # ESEO Toolbox

@@ -70,7 +70,7 @@ jobs:
         # Variables
         NEW_VERSION=$(echo $GITHUB_REF | sed 's/refs\/tags\/v//')
         OUTPUT_FILE=$(echo ${{ steps.web-ext-sign.outputs.target }} | sed 's/web-ext-artifacts\///')
-        UPDATE_LINK="https://matthieuev.github.io/Eseo-tools$OUTPUT_FILE"
+        UPDATE_LINK="https://matthieuev.github.io/Eseo-tools/$OUTPUT_FILE"
         JSON_FILE="updates.json"
         ADDON_ID="{3e2f33e0-e00d-48fb-9f13-8b603f960faf}"
 
@@ -106,7 +106,7 @@ jobs:
         cp ${{ steps.web-ext-sign.outputs.target }} release
         cp gh-pages/updates.json release
 
-        echo '<!DOCTYPE html><html><head><title>Eseo Tools</title></head><div id="example-option-1" class="install-ok"><a href="https://matthieuev.github.io/Eseo-toolseseo-tools.xpi">Install my add-on</a></div></html>' > release/index.html
+        echo '<!DOCTYPE html><html><head><title>Eseo Tools</title></head><div id="example-option-1" class="install-ok"><a href="https://matthieuev.github.io/Eseo-tools/eseo-tools.xpi">Install my add-on</a></div></html>' > release/index.html
 
     - name: Deploy to GitHub Pages
       uses: JamesIves/github-pages-deploy-action@4.1.5
