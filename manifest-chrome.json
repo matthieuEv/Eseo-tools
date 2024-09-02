@@ -1,0 +1,32 @@
+{
+    "manifest_version": 3,
+    "name": "ESEO-Tools",
+    "version": "",
+    "description": "Addons for ESEO Students Website",
+    "icons": {
+        "48": "icons/48.svg",
+        "96": "icons/96.svg"
+    },
+
+    "permissions": [
+        "storage",
+        "activeTab",
+        "tabs"
+    ],
+
+    "action": {
+        "default_popup": "popup/index.html",
+        "default_title": "ESEO-Tools",
+        "default_icon": {
+            "48": "icons/48.svg",
+            "96": "icons/96.svg"
+        }
+    },
+
+    "content_scripts": [
+        {
+            "matches": ["https://reseaueseo.sharepoint.com/sites/etu/Pages/Mes-notes.aspx"],
+            "js": ["scripts/gpaCalculator/main.js"]
+        }
+    ]
+}

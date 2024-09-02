@@ -25,11 +25,9 @@ jobs:
 
         # Update the manifest and popup with the new version
         sed -i "s/\"version\": \".*\"/\"version\": \"$VERSION\"/" manifest.json
+        sed -i "s/\"version\": \".*\"/\"version\": \"$VERSION\"/" manifest-chrome.json
         sed -i "s/<p id=\"version\"><\/p>/<p id=\"version\">v$VERSION<\/p>/" popup/index.html
 
-        cat manifest.json
-        cat popup/index.html
-    
     - name: web-ext build
       id: web-ext-build
       uses: kewisch/action-web-ext@v1
@@ -81,18 +79,31 @@ jobs:
         git commit -m "Ajout de la version $NEW_VERSION au fichier $JSON_FILE"
         git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/matthieuEv/Eseo-tools.git gh-pages
 
+    - name: Create Zip for Chrome
+      run: |
+        rm manifest.json
+        mv manifest-chrome.json manifest.json
+        zip -r eseo-tools-for-chrome.zip . -x ".github/*" -x ".git/*"
+
     - name: Create Release
       uses: softprops/action-gh-release@v2
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         body: |
-          # New Release
-
           ## How to install
 
-          Simply download the `.xpi` file under this release, and it will automatically install it on your browser.
-        files: ${{ steps.web-ext-sign.outputs.target }}
+          For Firefox, Simply download the `.xpi` file under this release, and it will automatically install it on your browser.
+
+          For Chrome, you must follow these steps:
+          - Download the `eseo-tools-for-chrome.zip` under this release
+          - Unzip it where you want to
+          - Go to chromium/chrome *Extension* settings.
+          - Click to check *Developer mode*
+          - Click *Load unpacked extension* and select the folder you unziped
+        files: |
+          ${{ steps.web-ext-sign.outputs.target }}
+          eseo-tools-for-chrome.zip
 
     - name: Create Github Pages
       run: |
