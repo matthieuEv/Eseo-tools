@@ -28,64 +28,50 @@ jobs:
         sed -i "s/\"version\": \".*\"/\"version\": \"$VERSION\"/" manifest-chrome.json
         sed -i "s/<p id=\"version\"><\/p>/<p id=\"version\">v$VERSION<\/p>/" popup/index.html
 
-    - name: Sign the web-ext
-      uses: saphareas/sign-web-extension-action@master
+    - name: Install Node.js
+      uses: actions/setup-node@v4
       with:
-        web-ext-id:  "{3e2f33e0-e00d-48fb-9f13-8b603f960faf}"
-        sign-listed: true
-        amo-api-key: ${{ secrets.FIREFOX_JWT_ISSUER }}
-        amo-api-secret: ${{ secrets.FIREFOX_JWT_SECRET }}
+        node-version: '18'
 
-    # - name: web-ext build
-    #   id: web-ext-build
-    #   uses: kewisch/action-web-ext@v1
-    #   with:
-    #     cmd: build
-    #     source: .
+    - name: Sign the extension
+      id: sign_extension
+      run: |
+        npm install --global web-ext
+        web-ext sign --api-key="${{ secrets.FIREFOX_JWT_ISSUER }}" --api-secret="${{ secrets.FIREFOX_JWT_SECRET }}" --channel=unlisted
+        echo "xpi_file=$(ls -t web-ext-artifacts/*.xpi | head -1)" >> $GITHUB_ENV
 
-    # - name: web-ext sign
-    #   id: web-ext-sign
-    #   uses: kewisch/action-web-ext@v1
-    #   with:
-    #     cmd: sign
-    #     source: ${{ steps.web-ext-build.outputs.target }}
-    #     channel: unlisted
-    #     apiKey: ${{ secrets.FIREFOX_JWT_ISSUER }}
-    #     apiSecret: ${{ secrets.FIREFOX_JWT_SECRET }}
-    #     timeout: 900000
-
-    # - name: Mettre à jour le fichier update.json
-    #   env:
-    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    #   run: |
-    #     git clone --branch gh-pages https://github.com/matthieuEv/Eseo-tools.git gh-pages
-    #     cd gh-pages
-    #     git config --global user.email "example@example.com"
-    #     git config --global user.name "Github Actions"
-    #     ls -la
-    #     sudo apt-get update
-    #     sudo apt-get install -y jq
-    #     ls -la
-    #     git config --global user.email "example@example.com"
-    #     git config --global user.name "Github Actions"
-    #     ls -la
+    - name: Mettre à jour le fichier update.json
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        git clone --branch gh-pages https://github.com/matthieuEv/Eseo-tools.git gh-pages
+        cd gh-pages
+        git config --global user.email "example@example.com"
+        git config --global user.name "Github Actions"
+        ls -la
+        sudo apt-get update
+        sudo apt-get install -y jq
+        ls -la
+        git config --global user.email "example@example.com"
+        git config --global user.name "Github Actions"
+        ls -la
         
-    #     # Variables
-    #     NEW_VERSION=$(echo $GITHUB_REF | sed 's/refs\/tags\/v//')
-    #     OUTPUT_FILE=$(echo ${{ steps.web-ext-sign.outputs.target }} | sed 's/web-ext-artifacts\///')
-    #     UPDATE_LINK="https://matthieuev.github.io/Eseo-tools/$OUTPUT_FILE"
-    #     JSON_FILE="updates.json"
-    #     ADDON_ID="{3e2f33e0-e00d-48fb-9f13-8b603f960faf}"
+        # Variables
+        NEW_VERSION=$(echo $GITHUB_REF | sed 's/refs\/tags\/v//')
+        OUTPUT_FILE=$(echo ${{ env.xpi_file }} | sed 's/web-ext-artifacts\///')
+        UPDATE_LINK="https://matthieuev.github.io/Eseo-tools/$OUTPUT_FILE"
+        JSON_FILE="updates.json"
+        ADDON_ID="{3e2f33e0-e00d-48fb-9f13-8b603f960faf}"
 
-    #     # Lire le fichier JSON existant et ajouter la nouvelle version
-    #     jq --arg new_version "$NEW_VERSION" --arg update_link "$UPDATE_LINK" --arg addon_id "$ADDON_ID" \
-    #     '.addons[$addon_id].updates += [{"version": $new_version, "update_link": $update_link}]' "$JSON_FILE" > tmp.$$.json && mv tmp.$$.json "$JSON_FILE"
+        # Lire le fichier JSON existant et ajouter la nouvelle version
+        jq --arg new_version "$NEW_VERSION" --arg update_link "$UPDATE_LINK" --arg addon_id "$ADDON_ID" \
+        '.addons[$addon_id].updates += [{"version": $new_version, "update_link": $update_link}]' "$JSON_FILE" > tmp.$$.json && mv tmp.$$.json "$JSON_FILE"
 
-    #     echo ">>>"
-    #     cat $JSON_FILE
-    #     git add $JSON_FILE
-    #     git commit -m "Ajout de la version $NEW_VERSION au fichier $JSON_FILE"
-    #     git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/matthieuEv/Eseo-tools.git gh-pages
+        echo ">>>"
+        cat $JSON_FILE
+        git add $JSON_FILE
+        git commit -m "Ajout de la version $NEW_VERSION au fichier $JSON_FILE"
+        git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/matthieuEv/Eseo-tools.git gh-pages
 
     - name: Create Zip for Chrome
       run: |
@@ -110,7 +96,7 @@ jobs:
           - Click to check *Developer mode*
           - Click *Load unpacked extension* and select the folder you unziped
         files: |
-          ${{ steps.web-ext-sign.outputs.target }}
+          ${{ env.xpi_file }}
           eseo-tools-for-chrome.zip
 
     - name: Create Github Pages
@@ -118,8 +104,8 @@ jobs:
         mkdir release
 
         # 2 copy, one for the latest that overwrite the previous one, and one for the versioned file
-        cp ${{ steps.web-ext-sign.outputs.target }} release/eseo-tools.xpi
-        cp ${{ steps.web-ext-sign.outputs.target }} release
+        cp ${{ env.xpi_file }} release/eseo-tools.xpi
+        cp ${{ env.xpi_file }} release
 
         # cp gh-pages/updates.json release
 
