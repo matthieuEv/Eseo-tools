@@ -26,7 +26,10 @@
     "content_scripts": [
         {
             "matches": ["https://reseaueseo.sharepoint.com/sites/etu/Pages/Mes-notes.aspx"],
-            "js": ["scripts/gpaCalculator/main.js"]
+            "js": [
+                "scripts/calculateur_moyenne_ects/main.js",
+                "scripts/calculateur_moyenne_generale/main.js"
+            ]
         }
     ],
 
