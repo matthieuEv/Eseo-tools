@@ -31,7 +31,7 @@ jobs:
     - name: Sign the web-ext
       uses: saphareas/sign-web-extension-action@master
       with:
-        web-ext-id: ${{ secrets.UUID }}
+        web-ext-id:  "{3e2f33e0-e00d-48fb-9f13-8b603f960faf}"
         sign-listed: true
         amo-api-key: ${{ secrets.FIREFOX_JWT_ISSUER }}
         amo-api-secret: ${{ secrets.FIREFOX_JWT_SECRET }}
@@ -120,7 +120,7 @@ jobs:
         # 2 copy, one for the latest that overwrite the previous one, and one for the versioned file
         cp ${{ steps.web-ext-sign.outputs.target }} release/eseo-tools.xpi
         cp ${{ steps.web-ext-sign.outputs.target }} release
-        
+
         # cp gh-pages/updates.json release
 
         echo '<!DOCTYPE html><html><head><title>Eseo Tools</title></head><div id="example-option-1" class="install-ok"><a href="https://matthieuev.github.io/Eseo-tools/eseo-tools.xpi">Install my add-on</a></div></html>' > release/index.html
