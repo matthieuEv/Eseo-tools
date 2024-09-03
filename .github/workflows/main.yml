@@ -37,7 +37,7 @@ jobs:
       id: sign_extension
       run: |
         npm install --global web-ext
-        web-ext sign --api-key="${{ secrets.FIREFOX_JWT_ISSUER }}" --api-secret="${{ secrets.FIREFOX_JWT_SECRET }}" --channel=unlisted
+        web-ext sign --api-key="${{ secrets.FIREFOX_JWT_ISSUER }}" --api-secret="${{ secrets.FIREFOX_JWT_SECRET }}" --channel=unlisted --approval-timeout=900000 --timeout=900000
         echo "xpi_file=$(ls -t web-ext-artifacts/*.xpi | head -1)" >> $GITHUB_ENV
 
     - name: Mettre à jour le fichier update.json
