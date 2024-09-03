@@ -1,15 +1,15 @@
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-    if (request.gpaSwitch !== undefined) {
-        document.getElementById('moy').style.display = request.gpaSwitch ? "flex" : "none";
+    if (request.moySwitch !== undefined) {
+        document.getElementById('moyButton').style.display = request.moySwitch ? "flex" : "none";
     }
 });
 
 // Ajouter ce code pour vérifier l'état lors de l'initialisation
-chrome.storage.local.get('gpaSwitch', (data) => {
-    if (data.gpaSwitch) {
-        document.getElementById('moy').style.display = "flex";
+chrome.storage.local.get('moySwitch', (data) => {
+    if (data.moySwitch) {
+        document.getElementById('moyButton').style.display = "flex";
     } else {
-        document.getElementById('moy').style.display = "none";
+        document.getElementById('moyButton').style.display = "none";
     }
 });
 
@@ -17,11 +17,12 @@ let header = document.getElementsByClassName('e_breadcrumb')[0];
 
 let div = document.createElement('div');
 div.id = 'moy';
-div.style = 'display:flex;align-items:center;margin-top:20px;';
+div.style = 'display:flex;align-items:center;margin-top:20px;position:relative;height: 2em;';
 
 // Create the button element
 let button = document.createElement('a');
 button.textContent = 'Calculer ma moyenne';
+button.id = 'moyButton';
 
 // Optional: Add styling or other attributes to the button
 button.style = 'margin: 0;padding: 4px 10px;background-color: #0066a7;color: #fff;text-decoration: none;font-weight: 700;font-size: 13px;cursor: pointer;';
@@ -65,9 +66,9 @@ async function computeMoy(){
             if (match) {
                 grade = parseFloat(match[0].replace(',','.'));
             }
-         } else { //Prevent locking
+        } else { //Prevent locking
             return;
-         }
+        }
         
         //Extract coefficient 
         var coefMatch = element.textContent.match(/\(Coef (\d+(\.\d+)?)\)/);
