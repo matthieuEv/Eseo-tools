@@ -31,5 +31,13 @@
                 "scripts/calculateur_moyenne_generale/main.js"
             ]
         }
-    ]
+    ],
+
+    "browser_specific_settings": {
+        "gecko": {
+            "id": "{3e2f33e0-e00d-48fb-9f13-8b603f960faf}",
+            "update_url": "https://matthieuev.github.io/Eseo-tools/updates.json"
+        }
+    }
+
 }
