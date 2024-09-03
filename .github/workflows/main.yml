@@ -54,38 +54,38 @@ jobs:
     #     apiSecret: ${{ secrets.FIREFOX_JWT_SECRET }}
     #     timeout: 900000
 
-    - name: Mettre à jour le fichier update.json
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        git clone --branch gh-pages https://github.com/matthieuEv/Eseo-tools.git gh-pages
-        cd gh-pages
-        git config --global user.email "example@example.com"
-        git config --global user.name "Github Actions"
-        ls -la
-        sudo apt-get update
-        sudo apt-get install -y jq
-        ls -la
-        git config --global user.email "example@example.com"
-        git config --global user.name "Github Actions"
-        ls -la
+    # - name: Mettre à jour le fichier update.json
+    #   env:
+    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    #   run: |
+    #     git clone --branch gh-pages https://github.com/matthieuEv/Eseo-tools.git gh-pages
+    #     cd gh-pages
+    #     git config --global user.email "example@example.com"
+    #     git config --global user.name "Github Actions"
+    #     ls -la
+    #     sudo apt-get update
+    #     sudo apt-get install -y jq
+    #     ls -la
+    #     git config --global user.email "example@example.com"
+    #     git config --global user.name "Github Actions"
+    #     ls -la
         
-        # Variables
-        NEW_VERSION=$(echo $GITHUB_REF | sed 's/refs\/tags\/v//')
-        OUTPUT_FILE=$(echo ${{ steps.web-ext-sign.outputs.target }} | sed 's/web-ext-artifacts\///')
-        UPDATE_LINK="https://matthieuev.github.io/Eseo-tools/$OUTPUT_FILE"
-        JSON_FILE="updates.json"
-        ADDON_ID="{3e2f33e0-e00d-48fb-9f13-8b603f960faf}"
+    #     # Variables
+    #     NEW_VERSION=$(echo $GITHUB_REF | sed 's/refs\/tags\/v//')
+    #     OUTPUT_FILE=$(echo ${{ steps.web-ext-sign.outputs.target }} | sed 's/web-ext-artifacts\///')
+    #     UPDATE_LINK="https://matthieuev.github.io/Eseo-tools/$OUTPUT_FILE"
+    #     JSON_FILE="updates.json"
+    #     ADDON_ID="{3e2f33e0-e00d-48fb-9f13-8b603f960faf}"
 
-        # Lire le fichier JSON existant et ajouter la nouvelle version
-        jq --arg new_version "$NEW_VERSION" --arg update_link "$UPDATE_LINK" --arg addon_id "$ADDON_ID" \
-        '.addons[$addon_id].updates += [{"version": $new_version, "update_link": $update_link}]' "$JSON_FILE" > tmp.$$.json && mv tmp.$$.json "$JSON_FILE"
+    #     # Lire le fichier JSON existant et ajouter la nouvelle version
+    #     jq --arg new_version "$NEW_VERSION" --arg update_link "$UPDATE_LINK" --arg addon_id "$ADDON_ID" \
+    #     '.addons[$addon_id].updates += [{"version": $new_version, "update_link": $update_link}]' "$JSON_FILE" > tmp.$$.json && mv tmp.$$.json "$JSON_FILE"
 
-        echo ">>>"
-        cat $JSON_FILE
-        git add $JSON_FILE
-        git commit -m "Ajout de la version $NEW_VERSION au fichier $JSON_FILE"
-        git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/matthieuEv/Eseo-tools.git gh-pages
+    #     echo ">>>"
+    #     cat $JSON_FILE
+    #     git add $JSON_FILE
+    #     git commit -m "Ajout de la version $NEW_VERSION au fichier $JSON_FILE"
+    #     git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/matthieuEv/Eseo-tools.git gh-pages
 
     - name: Create Zip for Chrome
       run: |
@@ -120,7 +120,8 @@ jobs:
         # 2 copy, one for the latest that overwrite the previous one, and one for the versioned file
         cp ${{ steps.web-ext-sign.outputs.target }} release/eseo-tools.xpi
         cp ${{ steps.web-ext-sign.outputs.target }} release
-        cp gh-pages/updates.json release
+        
+        # cp gh-pages/updates.json release
 
         echo '<!DOCTYPE html><html><head><title>Eseo Tools</title></head><div id="example-option-1" class="install-ok"><a href="https://matthieuev.github.io/Eseo-tools/eseo-tools.xpi">Install my add-on</a></div></html>' > release/index.html
 
