@@ -28,17 +28,31 @@ jobs:
         sed -i "s/\"version\": \".*\"/\"version\": \"$VERSION\"/" manifest-chrome.json
         sed -i "s/<p id=\"version\"><\/p>/<p id=\"version\">v$VERSION<\/p>/" popup/index.html
 
-    - name: Install Node.js
-      uses: actions/setup-node@v4
+        - name: Sign the web-ext
+        uses: saphareas/sign-web-extension-action@master
+        with:
+          web-ext-id: ${{ secrets.UUID }}
+          sign-listed: true
+          amo-api-key: ${{ secrets.FIREFOX_JWT_ISSUER }}
+          amo-api-secret: ${{ secrets.FIREFOX_JWT_SECRET }}
+  
+    - name: web-ext build
+      id: web-ext-build
+      uses: kewisch/action-web-ext@main
       with:
-        node-version: '18'
+        cmd: build
+        source: .
 
-    - name: Sign the extension
-      id: sign_extension
-      run: |
-        npm install --global web-ext
-        web-ext sign --api-key="${{ secrets.FIREFOX_JWT_ISSUER }}" --api-secret="${{ secrets.FIREFOX_JWT_SECRET }}" --channel=unlisted --approval-timeout=900000 --timeout=900000
-        echo "xpi_file=$(ls -t web-ext-artifacts/*.xpi | head -1)" >> $GITHUB_ENV
+    - name: web-ext sign
+      id: web-ext-sign
+      uses: kewisch/action-web-ext@main
+      with:
+        cmd: sign
+        source: ${{ steps.web-ext-build.outputs.target }}
+        channel: unlisted
+        apiKey: ${{ secrets.FIREFOX_JWT_ISSUER }}
+        apiSecret: ${{ secrets.FIREFOX_JWT_SECRET }}
+        timeout: 900000
 
     - name: Mettre à jour le fichier update.json
       env:
