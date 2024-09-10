@@ -28,14 +28,14 @@ jobs:
           sed -i "s/\"version\": \".*\"/\"version\": \"$VERSION\"/" manifest-chrome.json
           sed -i "s/<p id=\"version\"><\/p>/<p id=\"version\">v$VERSION<\/p>/" popup/index.html
 
-          - name: Sign the web-ext
-          uses: saphareas/sign-web-extension-action@master
-          with:
-            web-ext-id: ${{ secrets.UUID }}
-            sign-listed: true
-            amo-api-key: ${{ secrets.FIREFOX_JWT_ISSUER }}
-            amo-api-secret: ${{ secrets.FIREFOX_JWT_SECRET }}
-  
+      - name: Sign the web-ext
+        uses: saphareas/sign-web-extension-action@master
+        with:
+          web-ext-id: ${{ secrets.UUID }}
+          sign-listed: true
+          amo-api-key: ${{ secrets.FIREFOX_JWT_ISSUER }}
+          amo-api-secret: ${{ secrets.FIREFOX_JWT_SECRET }}
+
       - name: web-ext build
         id: web-ext-build
         uses: kewisch/action-web-ext@main
